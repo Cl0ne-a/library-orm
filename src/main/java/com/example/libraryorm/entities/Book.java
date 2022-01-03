@@ -12,7 +12,19 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedAttributeNode;
+import javax.persistence.NamedEntityGraph;
+import javax.persistence.Table;
 
+@NamedEntityGraph(
+        name = "book-graph"
+//        todo: why we need that parameter?
+//        ,
+//        attributeNodes = {
+//                @NamedAttributeNode("author"),
+//                @NamedAttributeNode("genre")}
+)
+@Table(name = "book")
 @Entity
 @Data
 @Builder
@@ -23,6 +35,7 @@ public class Book {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
     @Column(name = "title")
     private String title;
 

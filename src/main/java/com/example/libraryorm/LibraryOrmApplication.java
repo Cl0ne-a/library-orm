@@ -25,7 +25,7 @@ public class LibraryOrmApplication {
                 .build();
 
         Book book = Book.builder()
-                .title("some new book")
+                .title("TestBook")
                 .genre(genre)
                 .author(author)
                 .build();
@@ -35,6 +35,15 @@ public class LibraryOrmApplication {
                 .build();
 
         bookRepo.save(book);
-        System.out.println(bookRepo.findById(1));
+//        System.out.println(bookRepo.findById(1));
+
+//        val bookByName = bookRepo.findByTitle("TestBook");
+//        System.out.println(bookByName);
+
+        bookRepo.updateTitleById(1, "UpdatedTestBook");
+//        System.out.println(bookRepo.findById(1));
+
+        val list = bookRepo.findAll();
+        list.forEach(System.out::println);
     }
 }
