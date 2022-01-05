@@ -51,15 +51,12 @@ public class BookRepositoryJpa implements BookRepository{
     }
 
     @Override
-    public boolean updateTitleById(int id, String title) {
-        Query query = entityManager.createQuery(
-                "update Book b set b.title = :title where b.id = :id");
-
+    public void updateTitleById(int id, String title) {
+        String sql = "update Book b set b.title = :title where b.id = :id";
+        Query query = entityManager.createQuery(sql);
         query.setParameter("id", id);
         query.setParameter("title", title);
         query.executeUpdate();
-
-        return entityManager.find(Book.class, id).getTitle().equals(title);
     }
 
     @Override
@@ -69,5 +66,11 @@ public class BookRepositoryJpa implements BookRepository{
                 "join fetch b.genre join fetch b.author", Book.class);
         query.setHint("javax.persistence.fetchgraph", entityGraph);
         return query.getResultList();
+    }
+
+    @Override
+    public void deleteById(int id) {
+        val book = entityManager.find(Book.class, id);
+        entityManager.remove(book);
     }
 }

@@ -11,8 +11,8 @@ public interface BookRepository {
 
     Book findByTitle(String title);
 
-    boolean updateTitleById(int id, String title);
+    void updateTitleById(int id, String title);
 
     List<Book> findAll();
-//    void deleteById(long id);
+    void deleteById(int id);
 }

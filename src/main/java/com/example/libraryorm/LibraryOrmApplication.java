@@ -5,6 +5,7 @@ import com.example.libraryorm.entities.Book;
 import com.example.libraryorm.entities.Comment;
 import com.example.libraryorm.entities.Genre;
 import com.example.libraryorm.repository.BookRepository;
+import com.example.libraryorm.repository.CommentRepository;
 import lombok.val;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -15,7 +16,7 @@ public class LibraryOrmApplication {
     public static void main(String[] args) {
         var ctx = SpringApplication.run(LibraryOrmApplication.class, args);
         val bookRepo = ctx.getBean(BookRepository.class);
-
+        val commentRepo = ctx.getBean(CommentRepository.class);
         Author author = Author.builder()
                 .name("Name1")
                 .build();
@@ -34,16 +35,7 @@ public class LibraryOrmApplication {
                 .book(book)
                 .build();
 
-        bookRepo.save(book);
-//        System.out.println(bookRepo.findById(1));
-
-//        val bookByName = bookRepo.findByTitle("TestBook");
-//        System.out.println(bookByName);
-
-        bookRepo.updateTitleById(1, "UpdatedTestBook");
-//        System.out.println(bookRepo.findById(1));
-
-        val list = bookRepo.findAll();
-        list.forEach(System.out::println);
+        System.out.println(commentRepo.save(comment));
+        System.out.println(commentRepo.findByComment("good"));
     }
 }

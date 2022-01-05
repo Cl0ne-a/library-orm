@@ -12,15 +12,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.Import;
-
 import java.util.List;
-
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
-@DisplayName("Book repository provides following options: ")
+@DisplayName("BookRepository methods testing: ")
 @DataJpaTest
 @Import(BookRepositoryJpa.class)
-class BookRepositoryJpaTest {
+public class BookRepositoryJpaTest {
 
     @Autowired
     private BookRepositoryJpa bookRepositoryJpa;
@@ -32,18 +30,16 @@ class BookRepositoryJpaTest {
     @Test
     void findById() {
         System.out.println("findById()");
-        Book expectedBook = Book.builder()
-                .author(Author.builder()
-                        .name("Test author")
-                        .build())
-                .genre(Genre.builder()
-                        .genre("Horror")
-                        .build())
-                .build();
-        testEntityManager.persist(expectedBook);
 
-        var actual = bookRepositoryJpa.findById(1);
-        var expected = testEntityManager.find(Book.class, 1);
+        int idUnderTest = 1;
+        Book expected = Book.builder()
+                .id(idUnderTest)
+                .title("White magic")
+                .author(Author.builder().id(idUnderTest).name("Mr.Pool").build())
+                .genre(Genre.builder().id(idUnderTest).genre("comedy").build())
+                .build();
+
+        var actual = bookRepositoryJpa.findById(idUnderTest);
 
         assertThat(actual).isPresent().get().isEqualTo(expected);
     }
@@ -52,70 +48,43 @@ class BookRepositoryJpaTest {
     @Test
     void findByName() {
         System.out.println("findByName()");
-        val title = "TestBook";
-        val author = "Test author";
-        val genre = "Horror";
-        Book expectedBook = Book.builder()
-                .title(title)
-                .author(Author.builder()
-                        .name(author)
-                        .build())
-                .genre(Genre.builder()
-                        .genre(genre)
-                        .build())
-                .build();
-        bookRepositoryJpa.save(expectedBook);
-
+        val title = "White magic";
+        int idUnderTest = 1;
+        val expected = testEntityManager.find(Book.class, idUnderTest);
         val actual = bookRepositoryJpa.findByTitle(title);
 
-        assertThat(actual).usingRecursiveComparison().isEqualTo(expectedBook);
+        assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
     }
-
-    @DisplayName("update book title by id")
-    @Test
-    void updateTitleById() {
-        System.out.println("updateTitleById()");
-        Book expected = Book.builder()
-                .id(3)
-                .title("Updated TestBook")
-                .author(Author.builder().id(2).name("Mr. Smith").build())
-                .genre(Genre.builder().id(1).genre("comedy").build())
-                .build();
-
-        String newTitle = "Updated TestBook";
-        bookRepositoryJpa.updateTitleById(3, newTitle);
-
-        Book actual = testEntityManager.find(Book.class, 3);
-        assertThat(actual).isEqualTo(expected);
-    }
-
 
     @DisplayName("display all books and according data")
     @Test
     void findAll() {
         System.out.println("findAll()");
+        int firstIddUnderTest = 1;
+        int secondIddUnderTest = 2;
+        int thirdIddUnderTest = 3;
         SessionFactory sessionFactory = testEntityManager.getEntityManager().getEntityManagerFactory()
                 .unwrap(SessionFactory.class);
         sessionFactory.getStatistics().setStatisticsEnabled(true);
 
         List<Book> expected = List.of(
                 Book.builder()
-                        .id(1)
+                        .id(firstIddUnderTest)
                         .title("White magic")
-                        .author(Author.builder().id(1).name("Mr.Pool").build())
-                        .genre(Genre.builder().id(1).genre("comedy").build())
+                        .author(Author.builder().id(firstIddUnderTest).name("Mr.Pool").build())
+                        .genre(Genre.builder().id(firstIddUnderTest).genre("comedy").build())
                         .build(),
                 Book.builder()
-                        .id(2)
+                        .id(secondIddUnderTest)
                         .title("Black magic")
-                        .author(Author.builder().id(2).name("Mr. Smith").build())
-                        .genre(Genre.builder().id(2).genre("horror").build())
+                        .author(Author.builder().id(secondIddUnderTest).name("Mr. Smith").build())
+                        .genre(Genre.builder().id(secondIddUnderTest).genre("horror").build())
                         .build(),
                 Book.builder()
-                        .id(3)
+                        .id(thirdIddUnderTest)
                         .title("Test Book")
-                        .author(Author.builder().id(2).name("Mr. Smith").build())
-                        .genre(Genre.builder().id(1).genre("comedy").build())
+                        .author(Author.builder().id(secondIddUnderTest).name("Mr. Smith").build())
+                        .genre(Genre.builder().id(firstIddUnderTest).genre("comedy").build())
                         .build()
         );
 
@@ -124,19 +93,46 @@ class BookRepositoryJpaTest {
         Assertions.assertThat(sessionFactory.getStatistics().getPrepareStatementCount()).isEqualTo(1);
     }
 
+    @DisplayName("updating exiting book by index")
+    @Test
+    void updateTitleById() {
+        System.out.println("updateTitleById()");
+        int idUnderTest = 1;
+        String newTitle = "Updated TestBook";
+
+        bookRepositoryJpa.updateTitleById(idUnderTest, newTitle);
+
+        Book expected = testEntityManager.find(Book.class, idUnderTest);
+        Book actual = bookRepositoryJpa.findByTitle(newTitle);
+
+        assertThat(actual).isEqualTo(expected);
+    }
 
     @DisplayName("the entity is saved to db")
     @Test
     void save() {
         System.out.println("save()");
-        Book expected = Book.builder()
-                .id(4)
-                .title("expected")
-                .author(Author.builder().id(1).build())
-                .genre(Genre.builder().id(1).build())
+        Book testBook = Book.builder()
+                .title("TestBook")
+                .author(Author.builder().name("Test author").build())
+                .genre(Genre.builder().genre("Horror").build())
                 .build();
-        Book actual = bookRepositoryJpa.save(expected);
+
+        Book actual = bookRepositoryJpa.save(testBook);
+        int actualId = actual.getId();
+
+        Book expected = testEntityManager.find(Book.class, actualId);
 
         assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
+    }
+
+    @DisplayName("deleting book from db")
+    @Test
+    void delete() {
+        System.out.println("delete()");
+        Book expectedToDelete = bookRepositoryJpa.findByTitle("Test Book");
+        bookRepositoryJpa.deleteById(expectedToDelete.getId());
+
+        assertThat(testEntityManager.find(Book.class, 3)).isNull();
     }
 }

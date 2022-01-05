@@ -8,12 +8,14 @@ import lombok.NoArgsConstructor;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedEntityGraph;
 
+@NamedEntityGraph(
+        name = "comment-graph")
 @Entity
 @Data
 @Builder
@@ -27,7 +29,6 @@ public class Comment {
     @Column(name = "comment")
     private String comment;
 
-    @ManyToOne(fetch = FetchType.LAZY,
-            cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL)
     private Book book;
 }
