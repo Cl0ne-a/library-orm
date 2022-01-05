@@ -153,4 +153,12 @@ class CommentRepositoryJpaTest {
         commentRepositoryJpa.deleteById(actualId);
         assertThat(testEntityManager.find(Comment.class, actualId)).isNull();
     }
+
+    @DisplayName("find all comments by book id")
+    @Test
+    void findAllByBookId() {
+        val commentList = commentRepositoryJpa.findAllByBookId(1);
+
+        assertThat(commentList.size()).isEqualTo(1);
+    }
 }

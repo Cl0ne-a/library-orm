@@ -73,4 +73,12 @@ public class CommentRepositoryJpa implements CommentRepository{
         Comment comment = entityManager.find(Comment.class, id);
         entityManager.remove(comment);
     }
+
+    @Override
+    public List<Comment> findAllByBookId(int id) {
+        String sql = "select com from Comment com join fetch com.book where com.book.id = :id";
+        TypedQuery<Comment> query = entityManager.createQuery(sql, Comment.class);
+        query.setParameter("id", id);
+        return query.getResultList();
+    }
 }

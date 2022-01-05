@@ -17,4 +17,6 @@ public interface CommentRepository {
     List<Comment> findAll();
 
     void deleteById(int id);
+
+    List<Comment> findAllByBookId(int id);
 }

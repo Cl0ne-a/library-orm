@@ -35,7 +35,8 @@ public class LibraryOrmApplication {
                 .book(book)
                 .build();
 
-        System.out.println(commentRepo.save(comment));
-        System.out.println(commentRepo.findByComment("good"));
+//        System.out.println(commentRepo.save(comment));
+//        System.out.println(commentRepo.findByComment("good"));
+        System.out.println(commentRepo.findAllByBookId(1));
     }
 }
