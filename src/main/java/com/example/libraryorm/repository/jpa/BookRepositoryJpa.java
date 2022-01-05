@@ -1,6 +1,7 @@
-package com.example.libraryorm.repository;
+package com.example.libraryorm.repository.jpa;
 
 import com.example.libraryorm.entities.Book;
+import com.example.libraryorm.repository.BookRepository;
 import lombok.val;
 import org.springframework.stereotype.Repository;
 
@@ -15,13 +16,42 @@ import java.util.Optional;
 
 @Transactional
 @Repository
-public class BookRepositoryJpa implements BookRepository{
+public class BookRepositoryJpa implements BookRepository {
 
     @PersistenceContext
     private final EntityManager entityManager;
 
     public BookRepositoryJpa(EntityManager entityManager) {
         this.entityManager = entityManager;
+    }
+
+    @Override
+    public boolean notExist(Book book) {
+        String title = book.getTitle();
+        String sql = "select b from Book b where b.title = :title";
+        TypedQuery<Book> query = entityManager.createQuery(sql, Book.class).setParameter("title", title);
+        return query.getResultList().isEmpty();
+    }
+
+
+    @Override
+    public boolean present(int bookId) {
+        String sql = "select b from Book b where b.id = :bookId";
+        TypedQuery<Book> query = entityManager
+                .createQuery(sql, Book.class)
+                .setParameter("bookId", bookId);
+
+        return !query.getResultList().isEmpty();
+    }
+
+    @Override
+    public boolean present(String bookTitle) {
+        String sql = "select b from Book b where b.title = :bookTitle";
+        TypedQuery<Book> query = entityManager
+                .createQuery(sql, Book.class)
+                .setParameter("bookTitle", bookTitle);
+
+        return !query.getResultList().isEmpty();
     }
 
     @Override
@@ -36,17 +66,15 @@ public class BookRepositoryJpa implements BookRepository{
     }
 
     @Override
-    public Optional<Book> findById(int id) {
-        return Optional.ofNullable(
-                entityManager.find(Book.class, id));
+    public Book findById(int id) {
+        return entityManager.find(Book.class, id);
     }
 
     @Override
     public Book findByTitle(String title) {
-        TypedQuery<Book> query = entityManager.createQuery(
-                "select b from Book b where b.title = :title",
-                Book.class);
-        query.setParameter("title", title);
+        TypedQuery<Book> query = entityManager
+                .createQuery("select b from Book b where b.title = :title", Book.class)
+                .setParameter("title", title);
         return query.getSingleResult();
     }
 

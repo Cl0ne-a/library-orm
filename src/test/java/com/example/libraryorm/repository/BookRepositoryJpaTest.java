@@ -3,6 +3,7 @@ package com.example.libraryorm.repository;
 import com.example.libraryorm.entities.Author;
 import com.example.libraryorm.entities.Book;
 import com.example.libraryorm.entities.Genre;
+import com.example.libraryorm.repository.jpa.BookRepositoryJpa;
 import lombok.val;
 import org.assertj.core.api.Assertions;
 import org.hibernate.SessionFactory;
@@ -13,6 +14,8 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.Import;
 import java.util.List;
+import java.util.Optional;
+
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @DisplayName("BookRepository methods testing: ")
@@ -41,7 +44,7 @@ public class BookRepositoryJpaTest {
 
         var actual = bookRepositoryJpa.findById(idUnderTest);
 
-        assertThat(actual).isPresent().get().isEqualTo(expected);
+        assertThat(actual).isEqualTo(expected);
     }
 
     @DisplayName("finds correct entity by name")

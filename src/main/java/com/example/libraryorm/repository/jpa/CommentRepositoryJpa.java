@@ -1,6 +1,7 @@
-package com.example.libraryorm.repository;
+package com.example.libraryorm.repository.jpa;
 
 import com.example.libraryorm.entities.Comment;
+import com.example.libraryorm.repository.CommentRepository;
 import lombok.val;
 import org.springframework.stereotype.Repository;
 
@@ -15,7 +16,7 @@ import java.util.Optional;
 
 @Transactional
 @Repository
-public class CommentRepositoryJpa implements CommentRepository{
+public class CommentRepositoryJpa implements CommentRepository {
     @PersistenceContext
     private final EntityManager entityManager;
 

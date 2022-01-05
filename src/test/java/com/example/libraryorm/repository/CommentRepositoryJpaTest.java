@@ -4,6 +4,7 @@ import com.example.libraryorm.entities.Author;
 import com.example.libraryorm.entities.Book;
 import com.example.libraryorm.entities.Comment;
 import com.example.libraryorm.entities.Genre;
+import com.example.libraryorm.repository.jpa.CommentRepositoryJpa;
 import lombok.val;
 import org.hibernate.SessionFactory;
 import org.junit.jupiter.api.DisplayName;
@@ -115,7 +116,7 @@ class CommentRepositoryJpaTest {
                 .unwrap(SessionFactory.class);
         sessionFactory.getStatistics().setStatisticsEnabled(true);
 
-        val actualList = commentRepositoryJpa.findAll();
+        commentRepositoryJpa.findAll();
 
         assertThat(sessionFactory.getStatistics().getPrepareStatementCount()).isEqualTo(1);
     }
