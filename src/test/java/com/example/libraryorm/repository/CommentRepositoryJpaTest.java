@@ -157,8 +157,14 @@ class CommentRepositoryJpaTest {
     @DisplayName("find all comments by book id")
     @Test
     void findAllByBookId() {
+        SessionFactory sessionFactory = testEntityManager.getEntityManager().getEntityManagerFactory()
+                .unwrap(SessionFactory.class);
+        sessionFactory.getStatistics().setStatisticsEnabled(true);
+
         val commentList = commentRepositoryJpa.findAllByBookId(1);
 
         assertThat(commentList.size()).isEqualTo(1);
+        assertThat(sessionFactory.getStatistics()
+                .getPrepareStatementCount()).isEqualTo(1);
     }
 }
