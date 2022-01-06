@@ -9,12 +9,17 @@ import javax.persistence.Cacheable;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedEntityGraph;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import java.util.List;
+import java.util.Set;
 
 @Cacheable
 @NamedEntityGraph(
@@ -42,6 +47,10 @@ public class Book {
     @ManyToOne(cascade = CascadeType.ALL)
     private Author author;
 
-    @ManyToOne(targetEntity = Genre.class, cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL)
     private Genre genre;
+
+    @OneToMany(fetch = FetchType.LAZY, orphanRemoval = true)
+    @JoinColumn(name = "book_id")
+    private Set<Comment> commentList;
 }

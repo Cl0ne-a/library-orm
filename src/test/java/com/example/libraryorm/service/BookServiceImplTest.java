@@ -16,7 +16,10 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 class BookServiceImplTest {
@@ -28,9 +31,29 @@ class BookServiceImplTest {
         this.bookService = bookService;
     }
 
-//    void updateTitleById(int id, String title) throws BookNotFoundException;
+    @Test
+    void updateTitleById() throws BookNotFoundException {
+        int idUnderTest = 1;
+        String newTitle = "new title";
+        Book beforeUpdate = bookService.findById(idUnderTest);
+        bookService.updateTitleById(idUnderTest, newTitle);
+        Book afterUpdate = bookService.findById(idUnderTest);
 
-//    void deleteById(int id) throws BookNotFoundException;
+        assertNotEquals(beforeUpdate, afterUpdate);
+        assertThat(afterUpdate).matches(book -> book.getTitle().equals(newTitle));
+    }
+
+    @Test
+    void deleteById() throws BookNotFoundException {
+        int idUnderTest = 1;
+        Book beforeDelete = bookService.findById(idUnderTest);
+        assertThat(beforeDelete).isNotNull();
+
+        // perform delete
+        bookService.deleteById(idUnderTest);
+
+        assertThrows(BookNotFoundException.class, () -> bookService.findById(idUnderTest));
+    }
 
     @Test
     void findById() throws BookNotFoundException {
