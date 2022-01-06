@@ -7,20 +7,28 @@ import com.example.libraryorm.entities.Genre;
 import com.example.libraryorm.exceptions.BookNotFoundException;
 import lombok.val;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Rollback;
 
+import javax.transaction.Transactional;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.mock;
 
+@Transactional
 @SpringBootTest
 class BookServiceImplTest {
 
@@ -33,14 +41,13 @@ class BookServiceImplTest {
 
     @Test
     void updateTitleById() throws BookNotFoundException {
-        int idUnderTest = 1;
-        String newTitle = "new title";
-        Book beforeUpdate = bookService.findById(idUnderTest);
-        bookService.updateTitleById(idUnderTest, newTitle);
-        Book afterUpdate = bookService.findById(idUnderTest);
+        BookServiceImpl bookService = mock(BookServiceImpl.class);
 
-        assertNotEquals(beforeUpdate, afterUpdate);
-        assertThat(afterUpdate).matches(book -> book.getTitle().equals(newTitle));
+        ArgumentCaptor<String> valueCapture = ArgumentCaptor.forClass(String.class);
+        doNothing().when(bookService).updateTitleById(any(Integer.class), valueCapture.capture());
+        bookService.updateTitleById(1, "captured");
+
+        assertEquals("captured", valueCapture.getValue());
     }
 
     @Test
@@ -75,13 +82,13 @@ class BookServiceImplTest {
 
     @Test
     void findByTitle() throws BookNotFoundException {
-        String title = "White magic";
-        Author author = Author.builder().id(1).name("Mr.Pool").build();
-        Genre genre = Genre.builder().id(1).genre("comedy").build();
+        String title = "Black magic";
+        Author author = Author.builder().id(2).name("Mr. Smith").build();
+        Genre genre = Genre.builder().id(2).genre("horror").build();
         Book actual = bookService.findByTitle(title);
 
         Book expected = Book.builder()
-                .id(1)
+                .id(2)
                 .title(title)
                 .author(author)
                 .genre(genre)

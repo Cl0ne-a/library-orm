@@ -109,18 +109,6 @@ class CommentRepositoryJpaTest {
         assertEquals(commentList.size(), 1);
     }
 
-    @DisplayName("check number of requests for findAll() method")
-    @Test
-    void findAllRequests() {
-        SessionFactory sessionFactory = testEntityManager.getEntityManager().getEntityManagerFactory()
-                .unwrap(SessionFactory.class);
-        sessionFactory.getStatistics().setStatisticsEnabled(true);
-
-        commentRepositoryJpa.findAll();
-
-        assertThat(sessionFactory.getStatistics().getPrepareStatementCount()).isEqualTo(1);
-    }
-
     @DisplayName("delete instance of comment by id")
     @Test
     void deleteById() {
