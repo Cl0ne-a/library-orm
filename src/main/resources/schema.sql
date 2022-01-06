@@ -36,14 +36,14 @@ create table genre (
 alter table book
     add constraint FKklnrv3weler2ftkweewlky958
         foreign key (author_id)
-            references author;
+            references author on delete cascade;
  
 alter table book
     add constraint FKm1t3yvw5i7olwdf32cwuul7ta
         foreign key (genre_id)
-            references genre;
+            references genre on delete cascade;
  
 alter table comment
     add constraint FKkko96rdq8d82wm91vh2jsfak7
         foreign key (book_id)
-            references book;
+            references book on delete cascade;

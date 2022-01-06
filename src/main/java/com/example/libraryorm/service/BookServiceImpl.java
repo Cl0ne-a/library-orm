@@ -47,7 +47,7 @@ public class BookServiceImpl implements BookService{
         if (bookRepository.present(title)) {
             return bookRepository.findByTitle(title);
         } else {
-            throw new BookNotFoundException("no book present by that id");
+            throw new BookNotFoundException("no book present by that name");
         }
     }
 
