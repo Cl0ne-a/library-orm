@@ -49,8 +49,4 @@ public class Book {
 
     @ManyToOne(cascade = CascadeType.ALL)
     private Genre genre;
-
-    @OneToMany(fetch = FetchType.LAZY, orphanRemoval = true)
-    @JoinColumn(name = "book_id")
-    private Set<Comment> commentList;
 }
