@@ -5,7 +5,6 @@ import com.example.libraryorm.entities.Book;
 import java.util.List;
 
 public interface BookRepository {
-    boolean notExist(Book book);
 
     boolean present(int bookId);
 

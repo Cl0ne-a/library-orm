@@ -13,19 +13,15 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedAttributeNode;
 import javax.persistence.NamedEntityGraph;
 import javax.persistence.Table;
 
-;
-
-@Cacheable
 @NamedEntityGraph(
-        name = "book-graph"
-//        todo: why we need that parameter?
-//        ,
-//        attributeNodes = {
-//                @NamedAttributeNode("author"),
-//                @NamedAttributeNode("genre")}
+        name = "book-graph",
+        attributeNodes = {
+                @NamedAttributeNode("author"),
+                @NamedAttributeNode("genre")}
 )
 @Table(name = "book")
 @Entity

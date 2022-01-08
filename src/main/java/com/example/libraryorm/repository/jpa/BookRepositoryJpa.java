@@ -4,16 +4,16 @@ import com.example.libraryorm.entities.Book;
 import com.example.libraryorm.repository.BookRepository;
 import lombok.val;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityGraph;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
-import javax.transaction.Transactional;
 import java.util.List;
 
-@Transactional
 @Repository
 public class BookRepositoryJpa implements BookRepository {
 
@@ -24,15 +24,7 @@ public class BookRepositoryJpa implements BookRepository {
         this.entityManager = entityManager;
     }
 
-    @Override
-    public boolean notExist(Book book) {
-        String title = book.getTitle();
-        String sql = "select b from Book b where b.title = :title";
-        TypedQuery<Book> query = entityManager.createQuery(sql, Book.class).setParameter("title", title);
-        return query.getResultList().isEmpty();
-    }
-
-
+    @Transactional(readOnly = true)
     @Override
     public boolean present(int bookId) {
         String sql = "select b from Book b where b.id = :bookId";
@@ -43,6 +35,7 @@ public class BookRepositoryJpa implements BookRepository {
         return !query.getResultList().isEmpty();
     }
 
+    @Transactional(readOnly = true)
     @Override
     public boolean present(String bookTitle) {
         String sql = "select b from Book b where b.title = :bookTitle";
@@ -53,22 +46,25 @@ public class BookRepositoryJpa implements BookRepository {
         return !query.getResultList().isEmpty();
     }
 
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     @Override
     public Book save(Book book) {
         val id = book.getId();
-        if(id == 0) {
+        if (id == 0) {
             entityManager.persist(book);
             return book;
-        }else {
+        } else {
             return entityManager.merge(book);
         }
     }
 
+    @Transactional(readOnly = true)
     @Override
     public Book findById(int id) {
         return entityManager.find(Book.class, id);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public Book findByTitle(String title) {
         TypedQuery<Book> query = entityManager
@@ -77,6 +73,7 @@ public class BookRepositoryJpa implements BookRepository {
         return query.getSingleResult();
     }
 
+    @Transactional
     @Override
     public void updateTitleById(int id, String title) {
         String sql = "update Book b set b.title = :title where b.id = :id";
@@ -86,6 +83,7 @@ public class BookRepositoryJpa implements BookRepository {
         query.executeUpdate();
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<Book> findAll() {
         EntityGraph<?> entityGraph = entityManager.getEntityGraph("book-graph");
@@ -95,6 +93,7 @@ public class BookRepositoryJpa implements BookRepository {
         return query.getResultList();
     }
 
+    @Transactional
     @Override
     public void deleteById(int id) {
         val book = entityManager.find(Book.class, id);

@@ -1,46 +1,50 @@
 package com.example.libraryorm.service;
 
-import com.example.libraryorm.exceptions.BookAlreadyExistException;
 import com.example.libraryorm.entities.Author;
 import com.example.libraryorm.entities.Book;
 import com.example.libraryorm.entities.Genre;
-import com.example.libraryorm.exceptions.BookNotFoundException;
+import com.example.libraryorm.exceptions.BookPersistingException;
+import com.example.libraryorm.repository.BookRepository;
 import lombok.val;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.Rollback;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
-import javax.transaction.Transactional;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-@Transactional
 @SpringBootTest
 class BookServiceImplTest {
 
-    private final BookServiceImpl bookService;
+    private static final BookRepository bookRepository = mock(BookRepository.class);
 
-    @Autowired
-    BookServiceImplTest(BookServiceImpl bookService) {
-        this.bookService = bookService;
+    private static BookServiceImpl bookService;
+
+    @Configuration
+    static class ServiceConfiguration {
+
+        @Bean
+        BookServiceImpl bookService() {
+            bookService = new BookServiceImpl(bookRepository);
+            return bookService;
+        }
     }
 
+    @DisplayName("option to update title by id available")
     @Test
-    void updateTitleById() throws BookNotFoundException {
+    void updateTitleById() throws BookPersistingException {
         BookServiceImpl bookService = mock(BookServiceImpl.class);
 
         ArgumentCaptor<String> valueCapture = ArgumentCaptor.forClass(String.class);
@@ -50,25 +54,25 @@ class BookServiceImplTest {
         assertEquals("captured", valueCapture.getValue());
     }
 
+
+    @DisplayName("throws exception in case book by the id already exists")
     @Test
-    void deleteById() throws BookNotFoundException {
-        int idUnderTest = 1;
-        Book beforeDelete = bookService.findById(idUnderTest);
-        assertThat(beforeDelete).isNotNull();
+    void addBookThrowsException() {
+        Book book = Book.builder().id(1).build();
 
-        // perform delete
-        bookService.deleteById(idUnderTest);
+        when(bookRepository.findById(1)).thenReturn(book);
 
-        assertThrows(BookNotFoundException.class, () -> bookService.findById(idUnderTest));
+        assertThrows(BookPersistingException.class,
+                () -> bookService.addBook(book));
     }
 
+    @DisplayName("finds by id exact instances")
     @Test
-    void findById() throws BookNotFoundException {
+    void findById() throws BookPersistingException {
         int id = 1;
         String title = "White magic";
         Author author = Author.builder().id(1).name("Mr.Pool").build();
         Genre genre = Genre.builder().id(1).genre("comedy").build();
-        Book actual = bookService.findById(id);
 
         Book expected = Book.builder()
                 .id(1)
@@ -76,33 +80,75 @@ class BookServiceImplTest {
                 .author(author)
                 .genre(genre)
                 .build();
+        when(bookRepository.present(id)).thenReturn(true);
 
+        when(bookRepository.findById(id)).thenReturn(expected);
+
+        val actual = bookService.findById(id);
+
+        verify(bookRepository, times(1)).findById(id);
         assertThat(actual).isEqualTo(expected);
     }
 
+    @DisplayName("finds by title exact instances")
     @Test
-    void findByTitle() throws BookNotFoundException {
-        String title = "Black magic";
-        Author author = Author.builder().id(2).name("Mr. Smith").build();
-        Genre genre = Genre.builder().id(2).genre("horror").build();
-        Book actual = bookService.findByTitle(title);
+    void findByTitle() throws BookPersistingException {
+        int id = 1;
+        String title = "White magic";
+        Author author = Author.builder().id(1).name("Mr.Pool").build();
+        Genre genre = Genre.builder().id(1).genre("comedy").build();
 
         Book expected = Book.builder()
-                .id(2)
+                .id(id)
                 .title(title)
                 .author(author)
                 .genre(genre)
                 .build();
+        when(bookRepository.present(title)).thenReturn(true);
+
+        when(bookRepository.findByTitle(title)).thenReturn(expected);
+
+        val actual = bookService.findByTitle(title);
+
+        verify(bookRepository, times(1)).findByTitle(title);
+        assertThat(actual).isEqualTo(expected);
+    }
+
+
+    @DisplayName("deletes by id correct instance")
+    @Test
+    void deleteById() throws BookPersistingException {
+        int id = 1;
+        BookService mockService = mock(BookServiceImpl.class);
+
+        doNothing().when(mockService).deleteById(id);
+        mockService.deleteById(id);
+
+        verify(mockService, times(1)).deleteById(id);
+    }
+
+    @DisplayName("successfully addes new book in case it is not yet in db")
+    @Test
+    public void addBook() throws BookPersistingException {
+        Book expected = Book.builder()
+                .title("TestBook")
+                .author(Author.builder().name("Test author").build())
+                .genre(Genre.builder().genre("Horror").build())
+                .build();
+        when(bookRepository.save(expected)).thenReturn(expected);
+
+        val actual = bookService.addBook(expected);
 
         assertThat(actual).isEqualTo(expected);
     }
 
+    @DisplayName("returns list of existing instances")
     @Test
     void findAll() {
         int firstIdUnderTest = 1;
         int secondIdUnderTest = 2;
         int thirdIdUnderTest = 3;
-        List<Book> actual = bookService.findAll();
+
         List<Book> expected = List.of(
                 Book.builder()
                         .id(firstIdUnderTest)
@@ -124,30 +170,10 @@ class BookServiceImplTest {
                         .build()
         );
 
+        when(bookRepository.findAll()).thenReturn(expected);
+
+        val actual = bookService.findAll();
+
         assertThat(actual).isEqualTo(expected);
-    }
-
-    @Test
-    void addBook() throws BookAlreadyExistException {
-        Book book = Book.builder()
-                .title("TestBook")
-                .author(Author.builder().name("Test author").build())
-                .genre(Genre.builder().genre("Horror").build())
-                .build();
-        val actual = bookService.addBook(book);
-
-        assertThat(actual).isEqualTo(book);
-    }
-
-    @Test
-    void addBookThrowsException() {
-        Book book = Book.builder()
-                .title("Test Book")
-                .author(Author.builder().name("Test author").build())
-                .genre(Genre.builder().genre("Horror").build())
-                .build();
-
-        assertThrows(BookAlreadyExistException.class,
-                () -> bookService.addBook(book));
     }
 }
