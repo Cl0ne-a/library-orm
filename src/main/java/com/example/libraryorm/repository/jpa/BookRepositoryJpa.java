@@ -24,29 +24,7 @@ public class BookRepositoryJpa implements BookRepository {
         this.entityManager = entityManager;
     }
 
-    @Transactional(readOnly = true)
-    @Override
-    public boolean present(int bookId) {
-        String sql = "select b from Book b where b.id = :bookId";
-        TypedQuery<Book> query = entityManager
-                .createQuery(sql, Book.class)
-                .setParameter("bookId", bookId);
-
-        return !query.getResultList().isEmpty();
-    }
-
-    @Transactional(readOnly = true)
-    @Override
-    public boolean present(String bookTitle) {
-        String sql = "select b from Book b where b.title = :bookTitle";
-        TypedQuery<Book> query = entityManager
-                .createQuery(sql, Book.class)
-                .setParameter("bookTitle", bookTitle);
-
-        return !query.getResultList().isEmpty();
-    }
-
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional
     @Override
     public Book save(Book book) {
         val id = book.getId();

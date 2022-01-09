@@ -2,20 +2,17 @@ spring:
   datasource:
     url: jdbc:h2:mem:library
     initialization-mode: always
+
   main:
     allow-circular-references: true
   sql:
     init:
+      data-locations: data.sql
       mode: always
-      data-locations: app-data.sql
 
   jpa:
-    generate-ddl: true
     hibernate:
       ddl-auto: none
 
-    show-sql: false
-
-logging:
-  level:
-    ROOT: ERROR
+  jersey:
+    application-path:

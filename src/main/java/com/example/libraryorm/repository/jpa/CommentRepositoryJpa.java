@@ -3,6 +3,7 @@ package com.example.libraryorm.repository.jpa;
 import com.example.libraryorm.entities.Comment;
 import com.example.libraryorm.repository.CommentRepository;
 import lombok.val;
+import org.hibernate.Hibernate;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityGraph;
@@ -12,7 +13,6 @@ import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
 import java.util.List;
-import java.util.Optional;
 
 @Transactional
 @Repository
@@ -36,9 +36,8 @@ public class CommentRepositoryJpa implements CommentRepository {
     }
 
     @Override
-    public Optional<Comment> findById(int id) {
-        val comment = entityManager.find(Comment.class, id);
-        return Optional.ofNullable(comment);
+    public Comment findById(int id) {
+        return entityManager.find(Comment.class, id);
     }
 
     @Override
@@ -52,7 +51,7 @@ public class CommentRepositoryJpa implements CommentRepository {
     }
 
     @Override
-    public void updateTitleById(int id, String comment) {
+    public void updateCommentById(int id, String comment) {
         String sql = "update Comment c set c.comment = :comment where c.id = :id";
         Query query = entityManager.createQuery(sql);
         query.setParameter("id", id);

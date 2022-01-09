@@ -6,10 +6,6 @@ import java.util.List;
 
 public interface BookRepository {
 
-    boolean present(int bookId);
-
-    boolean present(String bookTitle);
-
     Book save(Book book);
 
     Book findById(int id);

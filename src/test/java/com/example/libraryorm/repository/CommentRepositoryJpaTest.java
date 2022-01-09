@@ -37,7 +37,7 @@ class CommentRepositoryJpaTest {
     void update() {
         String newComment = "awesome book";
 
-        commentRepositoryJpa.updateTitleById(1, newComment);
+        commentRepositoryJpa.updateCommentById(1, newComment);
 
         Comment actual = commentRepositoryJpa.findByComment(newComment);
         assertThat(actual.getComment()).isEqualTo(newComment);
@@ -68,10 +68,10 @@ class CommentRepositoryJpaTest {
     @DisplayName("finding by Id works")
     @Test
     void findById() {
-        Optional<Comment> actual = commentRepositoryJpa.findById(1);
-        Optional<Comment> expected = Optional.ofNullable(testEntityManager.find(Comment.class, 1));
+        Comment actual = commentRepositoryJpa.findById(1);
+        Comment expected = testEntityManager.find(Comment.class, 1);
 
-        assertThat(actual.get()).isExactlyInstanceOf(Comment.class);
+        assertThat(actual).isExactlyInstanceOf(Comment.class);
         assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
     }
 
@@ -136,7 +136,6 @@ class CommentRepositoryJpaTest {
 
         // approve we have added  new comment
         val addedComment = commentRepositoryJpa.findById(actualId);
-        assertThat(addedComment).isPresent();
 
         // performing delete operation
         commentRepositoryJpa.deleteById(actualId);

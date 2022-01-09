@@ -5,6 +5,7 @@ import com.example.libraryorm.entities.Book;
 import com.example.libraryorm.entities.Genre;
 import com.example.libraryorm.exceptions.BookPersistingException;
 import com.example.libraryorm.repository.BookRepository;
+import com.example.libraryorm.service.impl.BookServiceImpl;
 import lombok.val;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -80,13 +81,11 @@ class BookServiceImplTest {
                 .author(author)
                 .genre(genre)
                 .build();
-        when(bookRepository.present(id)).thenReturn(true);
-
         when(bookRepository.findById(id)).thenReturn(expected);
 
         val actual = bookService.findById(id);
 
-        verify(bookRepository, times(1)).findById(id);
+        verify(bookRepository, times(2)).findById(id);
         assertThat(actual).isEqualTo(expected);
     }
 
@@ -104,13 +103,11 @@ class BookServiceImplTest {
                 .author(author)
                 .genre(genre)
                 .build();
-        when(bookRepository.present(title)).thenReturn(true);
-
         when(bookRepository.findByTitle(title)).thenReturn(expected);
 
         val actual = bookService.findByTitle(title);
 
-        verify(bookRepository, times(1)).findByTitle(title);
+        verify(bookRepository, times(2)).findByTitle(title);
         assertThat(actual).isEqualTo(expected);
     }
 

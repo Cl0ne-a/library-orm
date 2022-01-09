@@ -29,6 +29,6 @@ public class Comment {
     @Column(name = "comment")
     private String comment;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.MERGE)
     private Book book;
 }
