@@ -8,4 +8,6 @@ public interface CommentService {
     Comment addComment(String comment, int bookId);
 
     List<Comment> findByBookId(int bookId);
+
+    List<Comment> listAll();
 }

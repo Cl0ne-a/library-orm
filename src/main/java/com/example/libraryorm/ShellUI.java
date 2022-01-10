@@ -119,4 +119,9 @@ public class ShellUI {
     List<Comment> findCommentsByBook(int bookId) {
         return commentService.findByBookId(bookId);
     }
+
+    @ShellMethod(key = "comment-list", value = "list all the comments")
+    List<Comment> listComments() {
+        return commentService.listAll();
+    }
 }
