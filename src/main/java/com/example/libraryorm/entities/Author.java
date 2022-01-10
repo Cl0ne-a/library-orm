@@ -10,7 +10,14 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.NamedAttributeNode;
+import javax.persistence.NamedEntityGraph;
 
+//@NamedEntityGraph(
+//        name = "author-graph",
+//        attributeNodes = {
+//                @NamedAttributeNode("name")
+//        })
 @Entity
 @Data
 @Builder

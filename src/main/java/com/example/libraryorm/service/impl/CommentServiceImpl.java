@@ -29,7 +29,6 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public List<Comment> findByBookId(int bookId) {
-        Hibernate.initialize(commentRepository.findAllByBookId(bookId));
         return commentRepository.findAllByBookId(bookId);
     }
 }

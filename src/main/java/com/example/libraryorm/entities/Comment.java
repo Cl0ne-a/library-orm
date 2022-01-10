@@ -12,10 +12,25 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedAttributeNode;
 import javax.persistence.NamedEntityGraph;
+import javax.persistence.NamedSubgraph;
 
 @NamedEntityGraph(
-        name = "comment-graph")
+        name = "comment-graph",
+        attributeNodes = {
+                @NamedAttributeNode("comment"),
+                @NamedAttributeNode(
+                        value = "book",
+                        subgraph = "book-subgraph")
+        },
+        subgraphs = {
+                @NamedSubgraph(
+                        name = "book-subgraph",
+                        attributeNodes = {
+                                @NamedAttributeNode("author"),
+                                @NamedAttributeNode("genre")
+                        })})
 @Entity
 @Data
 @Builder

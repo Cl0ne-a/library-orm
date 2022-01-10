@@ -77,11 +77,14 @@ public class CommentRepositoryJpa implements CommentRepository {
     @Override
     public List<Comment> findAllByBookId(int id) {
         String sql = "select com from Comment com join fetch com.book where com.book.id = :id";
-        EntityGraph<?> entityGraph = entityManager.getEntityGraph("comment-graph");
-        TypedQuery<Comment> query = entityManager
-                .createQuery(sql, Comment.class)
+
+        EntityGraph<?> entityGraph = entityManager
+                .getEntityGraph("comment-graph");
+
+        TypedQuery<Comment> query = entityManager.createQuery(sql, Comment.class)
                 .setParameter("id", id)
                 .setHint("javax.persistence.fetchgraph", entityGraph);
+
         return query.getResultList();
     }
 }
