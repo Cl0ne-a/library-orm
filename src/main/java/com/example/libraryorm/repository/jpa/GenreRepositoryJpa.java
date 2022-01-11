@@ -2,6 +2,7 @@ package com.example.libraryorm.repository.jpa;
 
 import com.example.libraryorm.entities.Genre;
 import com.example.libraryorm.repository.GenreRepository;
+import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -10,7 +11,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.List;
 
-@Service
+@Repository
 public class GenreRepositoryJpa implements GenreRepository {
     @PersistenceContext
     private final EntityManager entityManager;

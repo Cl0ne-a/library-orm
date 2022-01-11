@@ -9,7 +9,6 @@ import com.example.libraryorm.service.impl.BookServiceImpl;
 import lombok.val;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,9 +16,7 @@ import org.springframework.context.annotation.Configuration;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -42,19 +39,6 @@ class BookServiceImplTest {
             return bookService;
         }
     }
-
-    @DisplayName("option to update title by id available")
-    @Test
-    void updateTitleById() throws BookPersistingException {
-        BookServiceImpl bookService = mock(BookServiceImpl.class);
-
-        ArgumentCaptor<String> valueCapture = ArgumentCaptor.forClass(String.class);
-        doNothing().when(bookService).updateTitleById(any(Integer.class), valueCapture.capture());
-        bookService.updateTitleById(1, "captured");
-
-        assertEquals("captured", valueCapture.getValue());
-    }
-
 
     @DisplayName("throws exception in case book by the id already exists")
     @Test

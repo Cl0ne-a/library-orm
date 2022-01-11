@@ -1,17 +1,17 @@
 package com.example.libraryorm.repository.jpa;
 
 import com.example.libraryorm.entities.Book;
+import com.example.libraryorm.entities.Comment;
 import com.example.libraryorm.repository.BookRepository;
 import lombok.val;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityGraph;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
 import javax.persistence.TypedQuery;
+import java.util.Collections;
 import java.util.List;
 
 @Repository
@@ -51,22 +51,11 @@ public class BookRepositoryJpa implements BookRepository {
         return query.getSingleResult();
     }
 
-    @Transactional
-    @Override
-    public void updateTitleById(int id, String title) {
-        String sql = "update Book b set b.title = :title where b.id = :id";
-        Query query = entityManager.createQuery(sql);
-        query.setParameter("id", id);
-        query.setParameter("title", title);
-        query.executeUpdate();
-    }
-
     @Transactional(readOnly = true)
     @Override
     public List<Book> findAll() {
         EntityGraph<?> entityGraph = entityManager.getEntityGraph("book-graph");
-        TypedQuery<Book> query = entityManager.createQuery("select b from Book b " +
-                "join fetch b.genre join fetch b.author", Book.class);
+        TypedQuery<Book> query = entityManager.createQuery("select b from Book b",  Book.class);
         query.setHint("javax.persistence.fetchgraph", entityGraph);
         return query.getResultList();
     }
@@ -76,5 +65,10 @@ public class BookRepositoryJpa implements BookRepository {
     public void deleteById(int id) {
         val book = entityManager.find(Book.class, id);
         entityManager.remove(book);
+    }
+
+    @Override
+    public List<Comment> findAllCommentsById(int id) {
+        return Collections.emptyList();
     }
 }

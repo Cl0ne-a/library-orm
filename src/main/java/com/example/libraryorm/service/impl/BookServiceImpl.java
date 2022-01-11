@@ -53,15 +53,6 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public void updateTitleById(int id, String title) throws BookPersistingException {
-        if(null != bookRepository.findById(id)) {
-            bookRepository.updateTitleById(id, title);
-        } else {
-            throw new BookPersistingException("no book present by that id");
-        }
-    }
-
-    @Override
     public void deleteById(int id) throws BookPersistingException {
         if(null != bookRepository.findById(id)) {
             bookRepository.deleteById(id);

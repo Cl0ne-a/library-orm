@@ -15,7 +15,6 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.Import;
 
 import java.util.List;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -140,19 +139,5 @@ class CommentRepositoryJpaTest {
         // performing delete operation
         commentRepositoryJpa.deleteById(actualId);
         assertThat(testEntityManager.find(Comment.class, actualId)).isNull();
-    }
-
-    @DisplayName("find all comments by book id")
-    @Test
-    void findAllByBookId() {
-        SessionFactory sessionFactory = testEntityManager.getEntityManager().getEntityManagerFactory()
-                .unwrap(SessionFactory.class);
-        sessionFactory.getStatistics().setStatisticsEnabled(true);
-
-        val commentList = commentRepositoryJpa.findAllByBookId(1);
-
-        assertThat(commentList.size()).isEqualTo(1);
-        assertThat(sessionFactory.getStatistics()
-                .getPrepareStatementCount()).isEqualTo(1);
     }
 }

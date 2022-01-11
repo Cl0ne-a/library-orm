@@ -3,9 +3,10 @@ package com.example.libraryorm.entities;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-import javax.persistence.Cacheable;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -17,7 +18,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedAttributeNode;
 import javax.persistence.NamedEntityGraph;
 import javax.persistence.NamedSubgraph;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import java.util.List;
 
 @NamedEntityGraph(
         name = "book-graph",
@@ -26,7 +29,10 @@ import javax.persistence.Table;
                         subgraph = "author-subgraph"),
 
                 @NamedAttributeNode(value = "genre",
-                        subgraph = "genre-subgraph")},
+                        subgraph = "genre-subgraph"),
+
+                @NamedAttributeNode(value = "comments",
+                        subgraph = "comments-subgraph")},
 
         subgraphs = {
                 @NamedSubgraph(
@@ -38,12 +44,18 @@ import javax.persistence.Table;
                         name = "genre-subgraph",
                         attributeNodes = {
                                 @NamedAttributeNode("genre")
+                        }),
+                @NamedSubgraph(
+                        name = "comments-subgraph",
+                        attributeNodes = {
+                                @NamedAttributeNode("comment"),
+                                @NamedAttributeNode("book")
                         })
         }
 )
 @Table(name = "book")
 @Entity
-@Data
+@Getter @Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -60,4 +72,7 @@ public class Book {
 
     @ManyToOne(cascade = CascadeType.ALL)
     private Genre genre;
+
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "book")
+    private List<Comment> comments;
 }

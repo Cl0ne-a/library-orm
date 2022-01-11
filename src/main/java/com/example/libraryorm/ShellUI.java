@@ -98,12 +98,6 @@ public class ShellUI {
         return bookService.findByTitle(title);
     }
 
-    @ShellMethod(key = "update", value = "update book title by id")
-    Book updateBook(int id, String title) {
-        bookService.updateTitleById(id, title);
-        return bookService.findById(id);
-    }
-
     @ShellMethod(key = "books", value = "list books")
     List<Book> listBooks() {
         return bookService.findAll();

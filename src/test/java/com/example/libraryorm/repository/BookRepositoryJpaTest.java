@@ -96,21 +96,6 @@ public class BookRepositoryJpaTest {
         Assertions.assertThat(sessionFactory.getStatistics().getPrepareStatementCount()).isEqualTo(1);
     }
 
-    @DisplayName("updating exiting book by index")
-    @Test
-    void updateTitleById() {
-        System.out.println("updateTitleById()");
-        int idUnderTest = 1;
-        String newTitle = "Updated TestBook";
-
-        bookRepositoryJpa.updateTitleById(idUnderTest, newTitle);
-
-        Book expected = testEntityManager.find(Book.class, idUnderTest);
-        Book actual = bookRepositoryJpa.findByTitle(newTitle);
-
-        assertThat(actual).isEqualTo(expected);
-    }
-
     @DisplayName("the entity is saved to db")
     @Test
     void save() {

@@ -3,36 +3,22 @@ package com.example.libraryorm.entities;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.NamedAttributeNode;
-import javax.persistence.NamedEntityGraph;
-import javax.persistence.NamedSubgraph;
 
-@NamedEntityGraph(
-        name = "comment-graph",
-        attributeNodes = {
-                @NamedAttributeNode("comment"),
-                @NamedAttributeNode(
-                        value = "book",
-                        subgraph = "book-subgraph")
-        },
-        subgraphs = {
-                @NamedSubgraph(
-                        name = "book-subgraph",
-                        attributeNodes = {
-                                @NamedAttributeNode("author"),
-                                @NamedAttributeNode("genre")
-                        })})
 @Entity
-@Data
+@Getter @Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -44,6 +30,7 @@ public class Comment {
     @Column(name = "comment")
     private String comment;
 
-    @ManyToOne(cascade = CascadeType.MERGE)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+    @JoinColumn
     private Book book;
 }

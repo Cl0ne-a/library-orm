@@ -3,7 +3,6 @@ package com.example.libraryorm.repository.jpa;
 import com.example.libraryorm.entities.Comment;
 import com.example.libraryorm.repository.CommentRepository;
 import lombok.val;
-import org.hibernate.Hibernate;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,7 +11,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
-
 import java.util.List;
 
 @Repository
@@ -67,9 +65,7 @@ public class CommentRepositoryJpa implements CommentRepository {
     @Override
     public List<Comment> findAll() {
         String sql = "select com from Comment com join fetch com.book";
-        EntityGraph<?> entityGraph = entityManager.getEntityGraph("comment-graph");
         TypedQuery<Comment> query = entityManager.createQuery(sql, Comment.class);
-        query.setHint("javax.persistence.fetchgraph", entityGraph);
         return query.getResultList();
     }
 
@@ -85,12 +81,8 @@ public class CommentRepositoryJpa implements CommentRepository {
     public List<Comment> findAllByBookId(int id) {
         String sql = "select com from Comment com join fetch com.book where com.book.id = :id";
 
-        EntityGraph<?> entityGraph = entityManager
-                .getEntityGraph("comment-graph");
-
         TypedQuery<Comment> query = entityManager.createQuery(sql, Comment.class)
-                .setParameter("id", id)
-                .setHint("javax.persistence.fetchgraph", entityGraph);
+                .setParameter("id", id);
 
         return query.getResultList();
     }

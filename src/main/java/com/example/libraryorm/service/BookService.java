@@ -14,7 +14,5 @@ public interface BookService {
 
     Book findByTitle(String title) throws BookPersistingException;
 
-    void updateTitleById(int id, String title) throws BookPersistingException;
-
     void deleteById(int id) throws BookPersistingException;
 }
