@@ -4,6 +4,7 @@ import com.example.libraryorm.entities.Author;
 import com.example.libraryorm.repository.AuthorRepository;
 import com.example.libraryorm.service.AuthorService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -16,6 +17,7 @@ public class AuthorServiceImpl implements AuthorService {
         this.authorRepository = authorRepository;
     }
 
+    @Transactional
     @Override
     public List<Author> listAuthors() {
         return authorRepository.findAll();

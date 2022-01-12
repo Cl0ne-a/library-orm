@@ -7,6 +7,7 @@ import com.example.libraryorm.repository.CommentRepository;
 import com.example.libraryorm.service.CommentService;
 import org.hibernate.Hibernate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -20,6 +21,7 @@ public class CommentServiceImpl implements CommentService {
         this.bookRepository = bookRepository;
     }
 
+    @Transactional
     @Override
     public Comment addComment(String comment, int bookId) {
         Book book = bookRepository.findById(bookId);

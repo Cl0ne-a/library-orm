@@ -80,13 +80,18 @@ public class ShellUI {
         return bookService.addBook(book);
     }
 
-     @ShellMethod(key = "delete", value = "delete book by id")
-     Book deleteById(int id) {
+    @ShellMethod(key = "comments", value = "displays list of comments by certain book id")
+    List<Comment> findCommentsByBook(int bookId) {
+        return bookService.findAllComments(bookId);
+    }
 
-         Book book = bookService.findById(id);
-         bookService.deleteById(id);
-         return book;
-     }
+    @ShellMethod(key = "delete", value = "delete book by id")
+    Book deleteById(int id) {
+
+        Book book = bookService.findById(id);
+        bookService.deleteById(id);
+        return book;
+    }
 
     @ShellMethod(key = "id", value = "find book by id")
     Book findById(int id) {
@@ -100,18 +105,13 @@ public class ShellUI {
 
     @ShellMethod(key = "books", value = "list books")
     List<Book> listBooks() {
-        return bookService.findAll();
+        return bookService.findAllBooks();
     }
 
     // comment service
     @ShellMethod(key = "feedback", value = "comment for the book byid")
     Comment writeComment(String comment, int bookId) {
         return commentService.addComment(comment, bookId);
-    }
-
-    @ShellMethod(key = "comments", value = "displays list of comments by certain book id")
-    List<Comment> findCommentsByBook(int bookId) {
-        return commentService.findByBookId(bookId);
     }
 
     @ShellMethod(key = "comment-list", value = "list all the comments")

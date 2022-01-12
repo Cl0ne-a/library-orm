@@ -33,4 +33,13 @@ public class Comment {
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     @JoinColumn
     private Book book;
+
+    @Override
+    public String toString() {
+        return "Comment{" +
+                "id=" + id +
+                ", comment='" + comment + '\'' +
+                ", book=" + book +
+                '}';
+    }
 }

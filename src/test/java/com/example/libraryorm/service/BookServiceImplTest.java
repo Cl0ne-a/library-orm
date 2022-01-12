@@ -153,7 +153,7 @@ class BookServiceImplTest {
 
         when(bookRepository.findAll()).thenReturn(expected);
 
-        val actual = bookService.findAll();
+        val actual = bookService.findAllBooks();
 
         assertThat(actual).isEqualTo(expected);
     }

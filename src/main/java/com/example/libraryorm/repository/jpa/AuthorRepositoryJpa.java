@@ -2,14 +2,14 @@ package com.example.libraryorm.repository.jpa;
 
 import com.example.libraryorm.entities.Author;
 import com.example.libraryorm.repository.AuthorRepository;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.List;
 
-@Repository
+@Service
 public class AuthorRepositoryJpa implements AuthorRepository {
     @PersistenceContext
     private final EntityManager entityManager;
@@ -29,7 +29,6 @@ public class AuthorRepositoryJpa implements AuthorRepository {
         return entityManager.find(Author.class, id);
     }
 
-    @Transactional
     @Override
     public Author addAuthor(Author author) {
         int id = author.getId();

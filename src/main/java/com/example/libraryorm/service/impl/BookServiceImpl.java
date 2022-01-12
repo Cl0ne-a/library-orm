@@ -1,11 +1,14 @@
 package com.example.libraryorm.service.impl;
 
 import com.example.libraryorm.entities.Book;
+import com.example.libraryorm.entities.Comment;
 import com.example.libraryorm.exceptions.BookPersistingException;
 import com.example.libraryorm.repository.BookRepository;
 import com.example.libraryorm.service.BookService;
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -19,6 +22,7 @@ public class BookServiceImpl implements BookService {
         this.bookRepository = bookRepository;
     }
 
+    @Transactional
     @Override
     public Book addBook(Book newBook) throws BookPersistingException {
 
@@ -30,7 +34,13 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public List<Book> findAll() {
+    public List<Comment> findAllComments(int bookId) {
+        return bookRepository.findAllCommentsById(bookId);
+
+    }
+
+    @Override
+    public List<Book> findAllBooks() {
         return bookRepository.findAll();
     }
 
@@ -52,6 +62,7 @@ public class BookServiceImpl implements BookService {
         }
     }
 
+    @Transactional
     @Override
     public void deleteById(int id) throws BookPersistingException {
         if(null != bookRepository.findById(id)) {

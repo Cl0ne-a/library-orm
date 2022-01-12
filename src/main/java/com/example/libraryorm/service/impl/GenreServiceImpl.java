@@ -3,6 +3,7 @@ package com.example.libraryorm.service.impl;
 import com.example.libraryorm.entities.Genre;
 import com.example.libraryorm.repository.GenreRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -20,6 +21,7 @@ public class GenreServiceImpl implements com.example.libraryorm.service.GenreSer
         return genreRepository.findAll();
     }
 
+    @Transactional
     @Override
     public Genre addGenre(Genre genre) {
         return genreRepository.addGenre(genre);
