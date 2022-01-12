@@ -39,6 +39,7 @@ public class BookServiceImpl implements BookService {
 
     }
 
+    @Transactional
     @Override
     public List<Book> findAllBooks() {
         return bookRepository.findAll();
