@@ -17,5 +17,5 @@ public interface BookRepository {
 
     List<Book> findAll();
 
-    void deleteById(int id);
+    boolean deleteById(int id);
 }

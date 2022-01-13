@@ -4,7 +4,6 @@ import com.example.libraryorm.entities.Book;
 import com.example.libraryorm.entities.Comment;
 import com.example.libraryorm.repository.BookRepository;
 import lombok.val;
-import org.hibernate.Hibernate;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
@@ -49,20 +48,19 @@ public class BookRepositoryJpa implements BookRepository {
     @Override
     public List<Book> findAll() {
         TypedQuery<Book> query = entityManager
-                .createQuery("select b from Book b",  Book.class);
+                .createQuery("select b from Book b join fetch b.author join fetch b.genre",  Book.class);
         return query.getResultList();
     }
 
     @Override
-    public void deleteById(int id) {
-        val book = entityManager.find(Book.class, id);
-        entityManager.remove(book);
+    public boolean deleteById(int id) {
+        entityManager.find(Book.class, id).setRemoved(true);
+        return entityManager.find(Book.class, id).isRemoved();
     }
 
     @Override
     public List<Comment> findAllCommentsById(int id) {
         val book = entityManager.find(Book.class, id);
-        Hibernate.initialize(book);
         return book.getComments();
     }
 }

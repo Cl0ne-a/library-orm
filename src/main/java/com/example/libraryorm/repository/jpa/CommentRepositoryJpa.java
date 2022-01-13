@@ -7,9 +7,7 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
 import javax.persistence.TypedQuery;
-import java.util.List;
 
 @Service
 public class CommentRepositoryJpa implements CommentRepository {
@@ -44,37 +42,5 @@ public class CommentRepositoryJpa implements CommentRepository {
                         Comment.class);
         query.setParameter("comment", comment);
         return query.getSingleResult();
-    }
-
-    @Override
-    public void updateCommentById(int id, String comment) {
-        String sql = "update Comment c set c.comment = :comment where c.id = :id";
-        Query query = entityManager.createQuery(sql);
-        query.setParameter("id", id);
-        query.setParameter("comment", comment);
-        query.executeUpdate();
-    }
-
-    @Override
-    public List<Comment> findAll() {
-        String sql = "select com from Comment com join fetch com.book";
-        TypedQuery<Comment> query = entityManager.createQuery(sql, Comment.class);
-        return query.getResultList();
-    }
-
-    @Override
-    public void deleteById(int id) {
-        Comment comment = entityManager.find(Comment.class, id);
-        entityManager.remove(comment);
-    }
-
-    @Override
-    public List<Comment> findAllByBookId(int id) {
-        String sql = "select com from Comment com join fetch com.book where com.book.id = :id";
-
-        TypedQuery<Comment> query = entityManager.createQuery(sql, Comment.class)
-                .setParameter("id", id);
-
-        return query.getResultList();
     }
 }

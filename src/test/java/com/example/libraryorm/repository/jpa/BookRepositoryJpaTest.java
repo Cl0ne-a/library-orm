@@ -1,7 +1,8 @@
-package com.example.libraryorm.repository;
+package com.example.libraryorm.repository.jpa;
 
 import com.example.libraryorm.entities.Author;
 import com.example.libraryorm.entities.Book;
+import com.example.libraryorm.entities.Comment;
 import com.example.libraryorm.entities.Genre;
 import com.example.libraryorm.repository.jpa.BookRepositoryJpa;
 import lombok.val;
@@ -14,6 +15,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.Import;
 
+import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -40,11 +42,14 @@ public class BookRepositoryJpaTest {
                 .title("White magic")
                 .author(Author.builder().id(idUnderTest).name("Mr.Pool").build())
                 .genre(Genre.builder().id(idUnderTest).genre("comedy").build())
+                .comments(List.of(Comment.builder().id(1).comment("good book").build()))
                 .build();
 
-        var actual = bookRepositoryJpa.findById(idUnderTest);
+        var actual = testEntityManager.find(Book.class, idUnderTest);
 
-        assertThat(actual).isEqualTo(expected);
+        assertThat(actual)
+                .usingRecursiveComparison()
+                .usingOverriddenEquals().isEqualTo(expected);
     }
 
     @DisplayName("finds correct entity by name")
@@ -76,24 +81,27 @@ public class BookRepositoryJpaTest {
                         .title("White magic")
                         .author(Author.builder().id(firstIddUnderTest).name("Mr.Pool").build())
                         .genre(Genre.builder().id(firstIddUnderTest).genre("comedy").build())
+                        .comments(List.of(Comment.builder().id(1).comment("good book").build()))
                         .build(),
                 Book.builder()
                         .id(secondIddUnderTest)
                         .title("Black magic")
                         .author(Author.builder().id(secondIddUnderTest).name("Mr. Smith").build())
                         .genre(Genre.builder().id(secondIddUnderTest).genre("horror").build())
+                        .comments(Collections.emptyList())
                         .build(),
                 Book.builder()
                         .id(thirdIddUnderTest)
                         .title("Test Book")
                         .author(Author.builder().id(secondIddUnderTest).name("Mr. Smith").build())
                         .genre(Genre.builder().id(firstIddUnderTest).genre("comedy").build())
+                        .comments(Collections.emptyList())
                         .build()
         );
 
         val actual = bookRepositoryJpa.findAll();
         assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
-        Assertions.assertThat(sessionFactory.getStatistics().getPrepareStatementCount()).isEqualTo(1);
+        Assertions.assertThat(sessionFactory.getStatistics().getPrepareStatementCount()).isEqualTo(4);
     }
 
     @DisplayName("the entity is saved to db")

@@ -6,7 +6,6 @@ import com.example.libraryorm.entities.Comment;
 import com.example.libraryorm.entities.Genre;
 import com.example.libraryorm.service.AuthorService;
 import com.example.libraryorm.service.BookService;
-import com.example.libraryorm.service.CommentService;
 import com.example.libraryorm.service.GenreService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.shell.standard.ShellComponent;
@@ -17,17 +16,15 @@ import java.util.List;
 @ShellComponent
 public class ShellUI {
 
-    private final CommentService commentService;
     private final GenreService genreService;
     private final AuthorService authorService;
     private final BookService bookService;
 
     @Autowired
-    public ShellUI(CommentService commentService,
-                   GenreService genreService,
+    public ShellUI( GenreService genreService,
                    AuthorService authorService,
                    BookService bookService) {
-        this.commentService = commentService;
+
         this.genreService = genreService;
         this.authorService = authorService;
         this.bookService = bookService;
@@ -69,6 +66,16 @@ public class ShellUI {
         return authorService.listAuthors();
     }
 
+    @ShellMethod(key = "comment", value = "adding comment to a book, and returning updated list of comments for a book")
+    List<Comment> addComment(int bookId, String feedback) {
+        bookService.addComment(bookId, feedback);
+        return bookService.findAllComments(bookId);
+    }
+
+    @ShellMethod(key = "uncomment", value = "remove certain comment by book id and comment id")
+    boolean removeComment(int bookId, int commentId) {
+        return bookService.removeCommentById(bookId, commentId);
+    }
 
     // book service
     @ShellMethod(key = "book-save", value = "adding book")
@@ -106,16 +113,5 @@ public class ShellUI {
     @ShellMethod(key = "books", value = "list books")
     List<Book> listBooks() {
         return bookService.findAllBooks();
-    }
-
-    // comment service
-    @ShellMethod(key = "feedback", value = "comment for the book byid")
-    Comment writeComment(String comment, int bookId) {
-        return commentService.addComment(comment, bookId);
-    }
-
-    @ShellMethod(key = "comment-list", value = "list all the comments")
-    List<Comment> listComments() {
-        return commentService.listAll();
     }
 }

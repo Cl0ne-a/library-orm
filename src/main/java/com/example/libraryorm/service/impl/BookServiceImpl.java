@@ -5,12 +5,13 @@ import com.example.libraryorm.entities.Comment;
 import com.example.libraryorm.exceptions.BookPersistingException;
 import com.example.libraryorm.repository.BookRepository;
 import com.example.libraryorm.service.BookService;
-import org.hibernate.Hibernate;
+import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class BookServiceImpl implements BookService {
@@ -20,6 +21,28 @@ public class BookServiceImpl implements BookService {
     @Autowired
     public BookServiceImpl(BookRepository bookRepository) {
         this.bookRepository = bookRepository;
+    }
+
+    @Transactional
+    @Override
+    public boolean removeCommentById(int bookId, int commentId) {
+        val updateRemovedStatus = bookRepository.findAllCommentsById(bookId)
+                .stream()
+                .filter(comment -> comment.getId() == commentId)
+                .map(comment -> {
+                    comment.setRemoved(true);
+                    return comment.isRemoved();
+                }).findFirst();
+
+        return updateRemovedStatus.isPresent();
+    }
+
+    @Transactional
+    @Override
+    public boolean addComment(int bookId, String feedback) {
+        val bookComments = bookRepository.findById(bookId).getComments();
+        Comment comment = Comment.builder().comment(feedback).build();
+        return bookComments.add(comment);
     }
 
     @Transactional
@@ -35,14 +58,20 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public List<Comment> findAllComments(int bookId) {
-        return bookRepository.findAllCommentsById(bookId);
+        return bookRepository
+                .findAllCommentsById(bookId).stream()
+                .filter(comment -> !comment.isRemoved())
+                .collect(Collectors.toList());
 
     }
 
-    @Transactional
     @Override
     public List<Book> findAllBooks() {
-        return bookRepository.findAll();
+        return bookRepository
+                .findAll()
+                .stream()
+                .filter(book -> !book.isRemoved())
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -65,9 +94,9 @@ public class BookServiceImpl implements BookService {
 
     @Transactional
     @Override
-    public void deleteById(int id) throws BookPersistingException {
+    public boolean deleteById(int id) throws BookPersistingException {
         if(null != bookRepository.findById(id)) {
-            bookRepository.deleteById(id);
+            return bookRepository.deleteById(id);
         } else {
             throw new BookPersistingException("no book present by that id");
         }

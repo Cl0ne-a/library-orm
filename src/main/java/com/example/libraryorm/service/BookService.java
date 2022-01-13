@@ -7,6 +7,10 @@ import com.example.libraryorm.entities.Book;
 import java.util.List;
 
 public interface BookService {
+    boolean removeCommentById(int bookId, int comentId);
+
+    boolean addComment(int bookId, String feedback);
+
     Book addBook(Book book) throws BookPersistingException;
 
     List<Comment> findAllComments(int bookId);
@@ -17,5 +21,5 @@ public interface BookService {
 
     Book findByTitle(String title) throws BookPersistingException;
 
-    void deleteById(int id) throws BookPersistingException;
+    boolean deleteById(int id) throws BookPersistingException;
 }

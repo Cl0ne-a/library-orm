@@ -16,6 +16,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Transient;
 
 @Entity
 @Getter @Setter
@@ -27,19 +28,18 @@ public class Comment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    @Transient
+    boolean removed;
+
     @Column(name = "comment")
     private String comment;
-
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
-    @JoinColumn
-    private Book book;
 
     @Override
     public String toString() {
         return "Comment{" +
                 "id=" + id +
+                ", removed=" + removed +
                 ", comment='" + comment + '\'' +
-                ", book=" + book +
                 '}';
     }
 }

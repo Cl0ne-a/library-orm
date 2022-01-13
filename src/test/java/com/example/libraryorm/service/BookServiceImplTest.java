@@ -5,6 +5,7 @@ import com.example.libraryorm.entities.Book;
 import com.example.libraryorm.entities.Genre;
 import com.example.libraryorm.exceptions.BookPersistingException;
 import com.example.libraryorm.repository.BookRepository;
+import com.example.libraryorm.repository.CommentRepository;
 import com.example.libraryorm.service.impl.BookServiceImpl;
 import lombok.val;
 import org.junit.jupiter.api.DisplayName;
@@ -29,6 +30,7 @@ class BookServiceImplTest {
     private static final BookRepository bookRepository = mock(BookRepository.class);
 
     private static BookServiceImpl bookService;
+
 
     @Configuration
     static class ServiceConfiguration {
