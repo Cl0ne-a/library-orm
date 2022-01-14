@@ -55,17 +55,18 @@ public class ShellUI {
 
 
     // author service
+    @ShellMethod(key = "authors", value = "list authors")
+    List<Author> listAuthors() {
+        return authorService.listAuthors();
+    }
+
     @ShellMethod(key = "author-save", value = "adding author")
     Author addAuhtor(String name) {
         Author author = Author.builder().name(name).build();
         return authorService.addAuthor(author);
     }
 
-    @ShellMethod(key = "authors", value = "list authors")
-    List<Author> listAuthors() {
-        return authorService.listAuthors();
-    }
-
+    // commenting
     @ShellMethod(key = "comment", value = "adding comment to a book, and returning updated list of comments for a book")
     List<Comment> addComment(int bookId, String feedback) {
         bookService.addComment(bookId, feedback);
@@ -75,6 +76,12 @@ public class ShellUI {
     @ShellMethod(key = "uncomment", value = "remove certain comment by book id and comment id")
     boolean removeComment(int bookId, int commentId) {
         return bookService.removeCommentById(bookId, commentId);
+    }
+
+
+    @ShellMethod(key = "books", value = "list books")
+    List<Book> listBooks() {
+        return bookService.findAllBooks();
     }
 
     // book service
@@ -115,8 +122,4 @@ public class ShellUI {
         return bookService.findByTitle(title);
     }
 
-    @ShellMethod(key = "books", value = "list books")
-    List<Book> listBooks() {
-        return bookService.findAllBooks();
-    }
 }
