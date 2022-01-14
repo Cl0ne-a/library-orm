@@ -87,6 +87,11 @@ public class ShellUI {
         return bookService.addBook(book);
     }
 
+    @ShellMethod(key = "update", value = "update book by id")
+    Book updateBookById(int id, String newTitle) {
+        return bookService.update(id, newTitle);
+    }
+
     @ShellMethod(key = "comments", value = "displays list of comments by certain book id")
     List<Comment> findCommentsByBook(int bookId) {
         return bookService.findAllComments(bookId);

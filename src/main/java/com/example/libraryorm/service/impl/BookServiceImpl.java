@@ -25,6 +25,14 @@ public class BookServiceImpl implements BookService {
 
     @Transactional
     @Override
+    public Book update(int id, String newTitle) {
+        Book bookToUpdate = bookRepository.findById(id);
+        bookToUpdate.setTitle(newTitle);
+        return bookToUpdate;
+    }
+
+    @Transactional
+    @Override
     public boolean removeCommentById(int bookId, int commentId) {
         val updateRemovedStatus = bookRepository.findAllCommentsById(bookId)
                 .stream()

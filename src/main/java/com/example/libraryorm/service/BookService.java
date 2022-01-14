@@ -7,6 +7,8 @@ import com.example.libraryorm.entities.Book;
 import java.util.List;
 
 public interface BookService {
+    Book update(int id, String newTitle);
+
     boolean removeCommentById(int bookId, int comentId);
 
     boolean addComment(int bookId, String feedback);
