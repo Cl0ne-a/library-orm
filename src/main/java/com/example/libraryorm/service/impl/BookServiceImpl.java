@@ -62,7 +62,6 @@ public class BookServiceImpl implements BookService {
                 .findAllCommentsById(bookId).stream()
                 .filter(comment -> !comment.isRemoved())
                 .collect(Collectors.toList());
-
     }
 
     @Override
@@ -70,7 +69,13 @@ public class BookServiceImpl implements BookService {
         return bookRepository
                 .findAll()
                 .stream()
-                .filter(book -> !book.isRemoved())
+                .filter(book -> {
+                    var list = book.getComments()
+                            .stream().filter(c -> !c.isRemoved())
+                            .collect(Collectors.toList());
+                    book.getComments().retainAll(list);
+                    return !book.isRemoved();
+                })
                 .collect(Collectors.toList());
     }
 
@@ -96,7 +101,9 @@ public class BookServiceImpl implements BookService {
     @Override
     public boolean deleteById(int id) throws BookPersistingException {
         if(null != bookRepository.findById(id)) {
-            return bookRepository.deleteById(id);
+            Book book = bookRepository.findById(id);
+            book.setRemoved(true);
+            return book.isRemoved();
         } else {
             throw new BookPersistingException("no book present by that id");
         }

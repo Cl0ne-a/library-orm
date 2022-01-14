@@ -31,7 +31,8 @@ public class Book {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Transient
+//    @Transient
+    @Column
     boolean removed;
 
     @Column(name = "title", unique = true)

@@ -4,7 +4,6 @@ import com.example.libraryorm.entities.Author;
 import com.example.libraryorm.entities.Book;
 import com.example.libraryorm.entities.Comment;
 import com.example.libraryorm.entities.Genre;
-import com.example.libraryorm.repository.jpa.BookRepositoryJpa;
 import lombok.val;
 import org.assertj.core.api.Assertions;
 import org.hibernate.SessionFactory;
@@ -120,15 +119,5 @@ public class BookRepositoryJpaTest {
         Book expected = testEntityManager.find(Book.class, actualId);
 
         assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
-    }
-
-    @DisplayName("deleting book from db")
-    @Test
-    void delete() {
-        System.out.println("delete()");
-        Book expectedToDelete = bookRepositoryJpa.findByTitle("Test Book");
-        bookRepositoryJpa.deleteById(expectedToDelete.getId());
-
-        assertThat(testEntityManager.find(Book.class, 3)).isNull();
     }
 }

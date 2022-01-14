@@ -53,12 +53,6 @@ public class BookRepositoryJpa implements BookRepository {
     }
 
     @Override
-    public boolean deleteById(int id) {
-        entityManager.find(Book.class, id).setRemoved(true);
-        return entityManager.find(Book.class, id).isRemoved();
-    }
-
-    @Override
     public List<Comment> findAllCommentsById(int id) {
         val book = entityManager.find(Book.class, id);
         return book.getComments();

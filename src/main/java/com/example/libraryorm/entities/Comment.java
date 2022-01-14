@@ -28,7 +28,7 @@ public class Comment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Transient
+    @Column
     boolean removed;
 
     @Column(name = "comment")

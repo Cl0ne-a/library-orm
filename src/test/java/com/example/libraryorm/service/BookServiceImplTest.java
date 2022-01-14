@@ -5,7 +5,6 @@ import com.example.libraryorm.entities.Book;
 import com.example.libraryorm.entities.Genre;
 import com.example.libraryorm.exceptions.BookPersistingException;
 import com.example.libraryorm.repository.BookRepository;
-import com.example.libraryorm.repository.CommentRepository;
 import com.example.libraryorm.service.impl.BookServiceImpl;
 import lombok.val;
 import org.junit.jupiter.api.DisplayName;
@@ -104,7 +103,7 @@ class BookServiceImplTest {
         int id = 1;
         BookService mockService = mock(BookServiceImpl.class);
 
-        doNothing().when(mockService).deleteById(id);
+        when(mockService.deleteById(id)).thenReturn(true);
         mockService.deleteById(id);
 
         verify(mockService, times(1)).deleteById(id);
