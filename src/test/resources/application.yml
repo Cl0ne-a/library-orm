@@ -1,18 +1,24 @@
 spring:
   datasource:
     url: jdbc:h2:mem:library
-    initialization-mode: always
-
   main:
     allow-circular-references: true
+  shell:
+    interactive:
+      enabled: false
+
   sql:
     init:
-      data-locations: data.sql
       mode: always
+      data-locations: data.sql
 
   jpa:
+    generate-ddl: false
     hibernate:
       ddl-auto: none
 
-  jersey:
-    application-path:
+    show-sql: true
+
+logging:
+  level:
+    ROOT: ERROR
